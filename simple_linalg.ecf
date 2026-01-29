@@ -23,6 +23,7 @@
 	<target name="simple_linalg_tests" extends="simple_linalg">
 		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<library name="simple_testing" location="$SIMPLE_EIFFEL/simple_testing/simple_testing.ecf"/>
 		<cluster name="test" location="./test" recursive="true"/>
 	</target>
 </system>
