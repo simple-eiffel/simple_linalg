@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookbook - simple_linalg</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">Code Recipes & Examples</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">Quick API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="#recipes">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="recipes">
+            <h2>Code Recipes</h2>
+
+            <h3>Recipe 1: Vector Angle Between Two Vectors</h3>
+            <p>Compute angle between vectors using dot product and norms:</p>
+            <pre><code>local
+    l_a, l_b: VECTOR_3
+    l_cos_angle: REAL_64
+    l_angle: REAL_64
+do
+    create l_a.make_from_components (1.0, 0.0, 0.0)
+    create l_b.make_from_components (1.0, 1.0, 0.0)
+
+    l_cos_angle := l_a.dot_product (l_b) / (l_a.norm * l_b.norm)
+    -- l_cos_angle ≈ 0.707 (45 degrees)
+    -- To get angle in radians: l_angle := l_math.acos (l_cos_angle)
+end</code></pre>
+
+            <h3>Recipe 2: Normalize a Vector</h3>
+            <p>Get unit vector in same direction:</p>
+            <pre><code>local
+    l_v, l_normalized: VECTOR_3
+do
+    create l_v.make_from_components (3.0, 4.0, 0.0)
+    l_normalized := l_v.normalized
+    -- l_normalized = (0.6, 0.8, 0.0) with norm ≈ 1.0
+end</code></pre>
+
+            <h3>Recipe 3: Solve Linear System (2×2)</h3>
+            <p>Solve Ax = b for 2×2 system:</p>
+            <pre><code>local
+    l_a: MATRIX
+    l_b, l_x: VECTOR_N
+do
+    create l_a.make_zero (2, 2)
+    l_a.set_element (1, 1, 2.0)
+    l_a.set_element (1, 2, 1.0)
+    l_a.set_element (2, 1, 1.0)
+    l_a.set_element (2, 2, 3.0)
+
+    create l_b.make_zero (2)
+    l_b.set_at (1, 8.0)
+    l_b.set_at (2, 13.0)
+
+    if l_a.condition_number <= 1.0e12 then
+        l_x := l_a.solve (l_b)
+        -- l_x = [3, 2]
+    end
+end</code></pre>
+
+            <h3>Recipe 4: Matrix Transpose</h3>
+            <p>Flip rows and columns:</p>
+            <pre><code>local
+    l_m, l_t: MATRIX
+do
+    create l_m.make_zero (2, 3)
+    -- Set matrix values...
+    l_t := l_m.transpose
+    -- Result is 3×2 matrix
+end</code></pre>
+
+            <h3>Recipe 5: Check Matrix Condition (Stability)</h3>
+            <p>Assess numerical stability before solving:</p>
+            <pre><code>local
+    l_m: MATRIX
+    l_kappa: REAL_64
+do
+    create l_m.make_identity (3)
+    l_kappa := l_m.condition_number
+
+    if l_kappa < 100.0 then
+        -- Well-conditioned, solution is reliable
+    elseif l_kappa < 1.0e12 then
+        -- Moderately conditioned, acceptable
+    else
+        -- Ill-conditioned, solution unreliable
+    end
+end</code></pre>
+
+            <h3>Recipe 6: Project Vector onto Another</h3>
+            <p>Find projection of u onto v:</p>
+            <pre><code>local
+    l_u, l_v, l_proj: VECTOR_3
+    l_scale_factor: REAL_64
+do
+    create l_u.make_from_components (1.0, 1.0, 1.0)
+    create l_v.make_from_components (1.0, 0.0, 0.0)
+
+    -- proj_v(u) = (u·v / v·v) * v
+    l_scale_factor := l_u.dot_product (l_v) / l_v.dot_product (l_v)
+    l_proj := l_v.scale (l_scale_factor)
+    -- l_proj = (1.0, 0.0, 0.0)
+end</code></pre>
+
+            <h3>Recipe 7: Eigenvalue of Symmetric Matrix</h3>
+            <p>Compute dominant eigenvalue and eigenvector:</p>
+            <pre><code>local
+    l_m: MATRIX
+    l_result: EIGENVALUE_RESULT
+do
+    create l_m.make_identity (3)
+    -- For identity, eigenvalue is 1.0
+
+    l_result := l_m.eigenvalue_with_options (1.0e-6, 100)
+
+    if l_result.is_converged then
+        -- Eigenvalue and eigenvector are reliable
+    else
+        -- Matrix may not have real eigenvalues
+    end
+end</code></pre>
+
+            <h3>Recipe 8: LU Decomposition (Expert Access)</h3>
+            <p>Access L and U factors:</p>
+            <pre><code>local
+    l_m: MATRIX
+    l_lu: LU_DECOMPOSITION
+    l_l, l_u: MATRIX
+do
+    create l_m.make_identity (3)
+    l_lu := l_m.lu_decomposition
+
+    l_l := l_lu.l_factor
+    l_u := l_lu.u_factor
+    -- Verify: l_l.multiply (l_u) ≈ m
+end</code></pre>
+
+            <h3>Recipe 9: N-Dimensional Vector Operations</h3>
+            <p>Work with arbitrary-dimension vectors:</p>
+            <pre><code>local
+    l_v1, l_v2, l_sum: VECTOR_N
+    l_dot_product: REAL_64
+    l_i: INTEGER
+do
+    create l_v1.make_zero (100)
+    create l_v2.make_zero (100)
+
+    -- Fill vectors
+    from l_i := 1 until l_i > 100 loop
+        l_v1.set_at (l_i, l_i.to_real)
+        l_v2.set_at (l_i, 1.0)
+        l_i := l_i + 1
+    end
+
+    l_dot_product := l_v1.dot_product (l_v2)
+    l_sum := l_v1.add (l_v2)
+    -- l_dot_product = 100*101/2 = 5050
+end</code></pre>
+
+            <h3>Recipe 10: Matrix Determinant and Inverse</h3>
+            <p>Compute determinant and inverse:</p>
+            <pre><code>local
+    l_m, l_inv: MATRIX
+    l_det: REAL_64
+do
+    create l_m.make_identity (3)
+    l_det := l_m.determinant
+    -- For identity, determinant = 1.0
+
+    if l_det /= 0.0 then
+        l_inv := l_m.inverse
+        -- For identity, inverse = identity
+    end
+end</code></pre>
+        </section>
+
+        <section id="common-patterns">
+            <h2>Common Patterns</h2>
+
+            <h3>Pattern: Safe Vector Operations</h3>
+            <pre><code>-- Always check for zero vectors before normalizing
+local
+    l_v, l_normalized: VECTOR_N
+    l_norm: REAL_64
+do
+    l_norm := l_v.norm
+    if l_norm > 1.0e-15 then
+        -- Safe to normalize
+        l_normalized := l_v.normalized
+    else
+        -- Zero or near-zero vector, handle specially
+    end
+end</code></pre>
+
+            <h3>Pattern: Condition Number Check</h3>
+            <pre><code>-- Always verify before solving
+local
+    l_m: MATRIX
+    l_b, l_x: VECTOR_N
+do
+    if l_m.condition_number <= 1.0e12 then
+        l_x := l_m.solve (l_b)
+        -- Result is reliable
+    else
+        -- Consider alternative approach (regularization, etc.)
+    end
+end</code></pre>
+
+            <h3>Pattern: Eigenvalue Convergence Check</h3>
+            <pre><code>-- Verify convergence status
+local
+    l_m: MATRIX
+    l_result: EIGENVALUE_RESULT
+do
+    l_result := l_m.eigenvalue_with_options (1.0e-6, 100)
+
+    if l_result.is_converged then
+        -- Use eigenvalue with confidence
+    else
+        -- Try tighter tolerance or different matrix
+    end
+end</code></pre>
+
+            <h3>Pattern: Robust Norm Computation</h3>
+            <pre><code>-- Choose norm based on use case
+local
+    l_v: VECTOR_N
+    l_l1, l_l2, l_linf: REAL_64
+do
+    l_l1 := l_v.norm (1)      -- Manhattan distance
+    l_l2 := l_v.norm (2)      -- Euclidean distance (default)
+    l_linf := l_v.norm (3)    -- Max component
+end</code></pre>
+        </section>
+
+        <section id="best-practices">
+            <h2>Best Practices</h2>
+
+            <h3>1. Check Dimension Compatibility</h3>
+            <p>
+                Ensure vectors have matching dimensions before operations:
+            </p>
+            <pre><code>if l_v1.dimension = l_v2.dimension then
+    Result := l_v1.dot_product (l_v2)
+end</code></pre>
+
+            <h3>2. Use Condition Number as Gateway</h3>
+            <p>
+                Never solve ill-conditioned systems without careful consideration:
+            </p>
+            <pre><code>if l_m.condition_number <= 1.0e12 then
+    Result := l_m.solve (l_b)
+else
+    -- Handle ill-conditioned case
+end</code></pre>
+
+            <h3>3. Verify Eigenvalue Convergence</h3>
+            <p>
+                Power iteration may not converge for all matrices:
+            </p>
+            <pre><code>l_result := l_m.eigenvalue_with_options (tol, max_iter)
+if l_result.is_converged then
+    Result := l_result.eigenvalue
+end</code></pre>
+
+            <h3>4. Choose Appropriate Norm</h3>
+            <p>
+                Different norms suit different purposes:
+            </p>
+            <ul>
+                <li><strong>L1:</strong> Manhattan distance, outlier-resistant</li>
+                <li><strong>L2:</strong> Euclidean distance, standard choice</li>
+                <li><strong>L∞:</strong> Max component, peak deviation</li>
+            </ul>
+
+            <h3>5. Profile Your Algorithms</h3>
+            <p>
+                Test with realistic data to identify bottlenecks:
+            </p>
+            <pre><code>-- Time matrix multiplication for your typical size
+-- Profile on realistic hardware
+-- Consider caching intermediate results</code></pre>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">View on GitHub</a></p>
+        </footer>
+    </main>
+</body>
+</html>

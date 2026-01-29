@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - simple_linalg</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">User Guide</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">Quick API</a></li>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                simple_linalg provides vectors and matrices with numerical stability guarantees
+                backed by Design by Contract. All operations verify preconditions and postconditions,
+                ensuring data integrity and convergence.
+            </p>
+            <p>
+                <strong>Key features:</strong>
+            </p>
+            <ul>
+                <li>Specialized 2D/3D vectors with optimized operations</li>
+                <li>Generic n-dimensional vectors with arbitrary dimension</li>
+                <li>Robust matrix algorithms with condition number validation</li>
+                <li>LU decomposition with partial pivoting (expert access)</li>
+                <li>Eigenvalue/eigenvector computation via power iteration</li>
+                <li>Immutable result objects for SCOOP-safe concurrent use</li>
+                <li>100% test coverage including adversarial testing</li>
+            </ul>
+        </section>
+
+        <section id="use-cases">
+            <h2>Use Cases</h2>
+            <ul>
+                <li><strong>Scientific Computing</strong> — Matrix operations in simulations</li>
+                <li><strong>Numerical Analysis</strong> — Linear system solving (Ax=b)</li>
+                <li><strong>Graphics & Geometry</strong> — Vector transformations and projections</li>
+                <li><strong>Machine Learning</strong> — Linear regression and matrix decompositions</li>
+                <li><strong>Engineering</strong> — Structural analysis and mechanical simulations</li>
+            </ul>
+        </section>
+
+        <section id="installation">
+            <h2>Installation</h2>
+            <p>1. Add to your ECF configuration:</p>
+            <pre><code>&lt;library name="simple_linalg" location="$SIMPLE_EIFFEL/simple_linalg/simple_linalg.ecf"/&gt;</code></pre>
+            <p>2. Create instance in your code:</p>
+            <pre><code>local
+    l_v: VECTOR_2
+do
+    create l_v.make_from_components (3.0, 4.0)</code></pre>
+            <p>3. Start using vectors and matrices directly.</p>
+        </section>
+
+        <section id="vectors">
+            <h2>Working with Vectors</h2>
+
+            <h3>2D Vectors</h3>
+            <pre><code>local
+    l_v1, l_v2: VECTOR_2
+    l_dot, l_norm: REAL_64
+do
+    create l_v1.make_from_components (1.0, 2.0)
+    create l_v2.make_from_components (3.0, 4.0)
+
+    l_dot := l_v1.dot_product (l_v2)  -- 1*3 + 2*4 = 11
+    l_norm := l_v1.norm               -- sqrt(1 + 4) ≈ 2.236
+end</code></pre>
+
+            <h3>3D Vectors with Cross Product</h3>
+            <pre><code>local
+    l_u, l_v, l_cross: VECTOR_3
+do
+    create l_u.make_from_components (1.0, 0.0, 0.0)
+    create l_v.make_from_components (0.0, 1.0, 0.0)
+    l_cross := l_u.cross_product (l_v)
+    -- l_cross = (0.0, 0.0, 1.0)
+end</code></pre>
+
+            <h3>N-Dimensional Vectors</h3>
+            <pre><code>local
+    l_v: VECTOR_N
+    l_i: INTEGER
+do
+    create l_v.make_zero (100)  -- 100-dimensional zero vector
+
+    from l_i := 1 until l_i > 100 loop
+        l_v.set_at (l_i, l_i.to_real)
+        l_i := l_i + 1
+    end
+
+    Result := l_v.norm  -- L2 norm
+end</code></pre>
+
+            <h3>Vector Operations</h3>
+            <ul>
+                <li><strong>dot_product(v):</strong> Scalar product with another vector</li>
+                <li><strong>norm:</strong> L2 norm (Euclidean distance)</li>
+                <li><strong>norm(type):</strong> L1, L2, or L∞ norm</li>
+                <li><strong>normalized:</strong> Unit vector in same direction</li>
+                <li><strong>add(v), subtract(v):</strong> Component-wise operations</li>
+                <li><strong>scale(factor):</strong> Multiply all components by scalar</li>
+            </ul>
+        </section>
+
+        <section id="matrices">
+            <h2>Working with Matrices</h2>
+
+            <h3>Creating Matrices</h3>
+            <pre><code>local
+    l_m: MATRIX
+do
+    create l_m.make_identity (3)
+    -- Creates 3×3 identity matrix
+
+    create l_m.make_zero (4, 5)
+    -- Creates 4×5 zero matrix
+end</code></pre>
+
+            <h3>Matrix Multiplication</h3>
+            <pre><code>local
+    l_a, l_b, l_c: MATRIX
+do
+    create l_a.make_identity (3)
+    create l_b.make_identity (3)
+    l_c := l_a.multiply (l_b)
+    -- Result is 3×3 identity
+end</code></pre>
+
+            <h3>Solving Linear Systems (Ax=b)</h3>
+            <pre><code>local
+    l_m: MATRIX
+    l_b, l_x: VECTOR_N
+do
+    create l_m.make_identity (3)
+    create l_b.make_zero (3)
+
+    -- Check condition number before solving
+    if l_m.condition_number <= 1.0e12 then
+        l_x := l_m.solve (l_b)
+        -- l_x is the solution to Ax=b
+    end
+end</code></pre>
+
+            <h3>Matrix Properties</h3>
+            <ul>
+                <li><strong>determinant:</strong> Scalar value for square matrices</li>
+                <li><strong>condition_number:</strong> Numerical stability estimate (should be ≤ 1e12)</li>
+                <li><strong>is_identity:</strong> Check if matrix is identity</li>
+                <li><strong>transpose:</strong> Swap rows and columns</li>
+                <li><strong>inverse:</strong> Inverse matrix (if non-singular)</li>
+            </ul>
+        </section>
+
+        <section id="advanced-algorithms">
+            <h2>Advanced Algorithms</h2>
+
+            <h3>LU Decomposition (Expert Tier)</h3>
+            <pre><code>local
+    l_m: MATRIX
+    l_lu: LU_DECOMPOSITION
+do
+    create l_m.make_identity (3)
+    l_lu := l_m.lu_decomposition
+    -- Access L and U factors via l_lu.l_factor and l_lu.u_factor
+end</code></pre>
+
+            <h3>Eigenvalue Computation</h3>
+            <pre><code>local
+    l_m: MATRIX
+    l_result: EIGENVALUE_RESULT
+do
+    create l_m.make_identity (3)
+    l_result := l_m.eigenvalue_with_options (1.0e-6, 100)
+
+    if l_result.is_converged then
+        Result := l_result.eigenvalue
+    end
+end</code></pre>
+        </section>
+
+        <section id="best-practices">
+            <h2>Best Practices</h2>
+
+            <h3>1. Check Condition Number Before Solving</h3>
+            <p>
+                Poorly conditioned matrices (κ > 1e12) lead to inaccurate solutions.
+                Always verify condition_number before calling solve().
+            </p>
+
+            <h3>2. Use Specialized Vectors When Possible</h3>
+            <p>
+                VECTOR_2 and VECTOR_3 are optimized for graphics and physics.
+                Use VECTOR_N only when dimension is truly arbitrary.
+            </p>
+
+            <h3>3. Verify Results Are Reasonable</h3>
+            <p>
+                Check that computed values (eigenvalues, norms) make sense for your domain.
+                NaN or infinite values indicate numerical issues.
+            </p>
+
+            <h3>4. Use SCOOP-Safe Patterns</h3>
+            <p>
+                Results are immutable. Safe to pass between concurrent processors:
+            </p>
+            <pre><code>local
+    l_result: EIGENVALUE_RESULT
+    l_sep: separate EIGENVALUE_RESULT
+do
+    l_result := l_m.eigenvalue_with_options (1.0e-6, 100)
+    -- Safe to use from multiple threads
+end</code></pre>
+
+            <h3>5. Handle Edge Cases</h3>
+            <ul>
+                <li>Zero vectors have undefined direction</li>
+                <li>Singular matrices cannot be inverted</li>
+                <li>Poorly conditioned systems may have large errors</li>
+            </ul>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Troubleshooting</h2>
+
+            <h3>Vector Norm is Zero</h3>
+            <ul>
+                <li>Check that vector is not all zeros</li>
+                <li>For nearly-zero vectors, consider numerical tolerance</li>
+            </ul>
+
+            <h3>Solve Returns Invalid Result</h3>
+            <ul>
+                <li>Check condition_number (should be ≤ 1e12)</li>
+                <li>Verify matrix is non-singular (determinant ≠ 0)</li>
+                <li>Consider numerical precision limits</li>
+            </ul>
+
+            <h3>Eigenvalue Computation Doesn't Converge</h3>
+            <ul>
+                <li>Matrix may not have real eigenvalues</li>
+                <li>Increase tolerance or iteration limit</li>
+                <li>Try different starting vectors</li>
+            </ul>
+
+            <h3>NaN or Infinite Results</h3>
+            <ul>
+                <li>Check for division by zero (zero norm, zero determinant)</li>
+                <li>Verify matrix values are not NaN</li>
+                <li>Check for numerical overflow in matrix operations</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">View on GitHub</a></p>
+        </footer>
+    </main>
+</body>
+</html>

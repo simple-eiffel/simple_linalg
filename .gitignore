@@ -1,0 +1,34 @@
+# Eiffel build artifacts
+EIFGENs/
+.eiffel_generated/
+
+# Compiled files
+*.melted
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation build artifacts
+docs/_build/
+docs/.doctrees/
+
+# Testing artifacts
+.coverage
+htmlcov/
+
+# Project temporary files
+*.tmp

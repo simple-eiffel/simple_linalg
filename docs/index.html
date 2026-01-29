@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple_linalg - Linear Algebra for Eiffel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">Vectors, matrices, and decompositions with verified numerical stability.</p>
+        <div class="badges">
+            <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
+            <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
+            <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>
+                <strong>simple_linalg</strong> is a production-ready linear algebra library for Eiffel.
+                It provides vectors (2D, 3D, n-dimensional), matrices with proven numerical stability,
+                and advanced algorithms like LU decomposition, condition number estimation, and eigenvalue computation.
+            </p>
+            <p>
+                Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.
+            </p>
+        </section>
+
+        <section id="features">
+            <h2>Features</h2>
+            <ul>
+                <li>Vector specialization (2D/3D) with generic n-dimensional support</li>
+                <li>Matrix operations with column-major storage</li>
+                <li>LU decomposition with partial pivoting (Tier 3 expert access)</li>
+                <li>Condition number validation (κ ≤ 1e12 threshold)</li>
+                <li>SCOOP-safe immutable result objects</li>
+                <li>3-tier API (Simple/Advanced/Expert)</li>
+                <li>Design by Contract throughout</li>
+                <li>Void-safe implementation</li>
+            </ul>
+        </section>
+
+        <section id="status">
+            <h2>Status</h2>
+            <p><strong>v1.0.0 - Production Ready</strong></p>
+            <ul>
+                <li>22 tests passing (100% pass rate)</li>
+                <li>Design by Contract throughout</li>
+                <li>Void-safe (void_safety="all")</li>
+                <li>SCOOP compatible (concurrency support)</li>
+            </ul>
+        </section>
+
+        <section id="quick-start">
+            <h2>Quick Start</h2>
+            <p>See <a href="quick.html">Quick API</a> for immediate examples.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>

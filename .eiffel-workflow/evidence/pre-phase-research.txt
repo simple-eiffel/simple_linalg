@@ -1,0 +1,128 @@
+# Pre-Phase Research Evidence
+# Project: simple_linalg
+# Date: 2026-01-29
+
+## Research Completion Status
+
+Research completed: YES
+Steps completed: 7/7 (+ REFERENCES.md bonus)
+
+## Files Delivered
+
+1. ✅ 01-SCOPE.md (Problem statement, target users, success criteria)
+2. ✅ 02-LANDSCAPE.md (3+ alternatives researched with real URLs)
+3. ✅ 03-REQUIREMENTS.md (16 FR, 6 NFR, prioritized, testable)
+4. ✅ 04-DECISIONS.md (6 major design decisions, options evaluated)
+5. ✅ 05-INNOVATIONS.md (4 novel approaches vs existing solutions)
+6. ✅ 06-RISKS.md (7 risks identified with mitigations)
+7. ✅ 07-RECOMMENDATION.md (BUILD recommendation with HIGH confidence)
+8. ✅ REFERENCES.md (Bonus: full reference list with learning outcomes)
+
+## Research Quality Metrics
+
+References cited: 10+ (NumPy, BLAS/LAPACK, Eigen, papers, textbooks, Stack Overflow)
+Alternatives researched: 3 (NumPy, BLAS/LAPACK, Eigen)
+Requirements defined: 22 (16 functional, 6 non-functional)
+Decisions documented: 6 (with options, rationale, reversibility)
+Risks identified: 7 (with likelihood, impact, mitigations)
+Innovations documented: 4 (vs existing solutions)
+
+## Recommendation
+
+**Action:** BUILD
+**Confidence:** HIGH
+
+**Rationale:**
+1. Gap exists - Eiffel ecosystem has no linear algebra library
+2. MVP viable - Dense matrix operations well-understood, implementable in pure Eiffel
+3. Use case validated - Physics simulations need Jacobians, eigenvalues, linear systems
+4. API design clear - Simple facade wrapping VECTOR, MATRIX classes
+5. Numerical soundness - Industry algorithms (LU, QR, eigenvalues) proven
+
+## Scope Summary
+
+### In Scope (MVP - v1.0.0)
+- Vector operations (2D, 3D, n-dimensional, norms, dot product)
+- Matrix operations (multiply, transpose, determinant, inverse)
+- LU decomposition with partial pivoting
+- Linear system solving (Ax = b)
+- Eigenvalue/eigenvector (power iteration)
+- Condition number estimation for stability
+
+### Deferred to Phase 2+
+- QR decomposition (Gram-Schmidt, Householder)
+- Singular Value Decomposition (SVD)
+- All eigenvalues via QR algorithm
+- Sparse matrix support (separate library)
+- Complex matrix support
+
+## Key Design Decisions
+
+D-001: Dense matrices only (sparse deferred to separate library)
+D-002: Column-major storage (matches BLAS/LAPACK convention)
+D-003: Partial pivoting (numerically stable, simpler than complete)
+D-004: Power iteration for eigenvalues (simple, dominant eigenvalue)
+D-005: Custom VECTOR class wrapping ARRAY (encapsulation)
+D-006: Estimate condition number (fast, practical)
+
+## Risk Management
+
+7 risks identified:
+- RISK-001: Ill-conditioned matrices (HIGH/HIGH) → Condition number detection, preconditions
+- RISK-002: Performance on large matrices (MEDIUM/MEDIUM) → Phase 2 can optimize
+- RISK-003: Sparse matrix pressure (MEDIUM/LOW) → Document as Phase 2 separate library
+- RISK-004: Eigenvalue limitations (MEDIUM/MEDIUM) → Phase 2 QR method
+- RISK-005: LU breakdown (MEDIUM/HIGH) → Partial pivoting, exception handling
+- RISK-006: Symbolic conflict (LOW/MEDIUM) → Design compatible interface
+- RISK-007: Insufficient testing (MEDIUM/HIGH) → Comprehensive test suite (100+ cases)
+
+## Dependencies
+
+### Required
+- simple_math (basic arithmetic)
+- base (ISE allowed - fundamental types)
+- testing (ISE allowed - EQA_TEST_SET)
+
+### Future Integrations
+- simple_calculus (Jacobian computation)
+- simple_optimization (gradient descent, Newton-Raphson)
+- simple_physics (electromagnetic fields, structural analysis)
+
+## Simple_* First Policy Validation
+
+✅ Checked ecosystem - no simple_linalg exists
+✅ Checked ISE stdlib - no native linear algebra library
+✅ Checked Gobo - no linear algebra support
+✅ Conclusion: Must BUILD
+
+## Success Criteria Status
+
+All criteria defined and measurable:
+- Vector/matrix accuracy: < 1e-10 relative error (testable)
+- LU solving: < 1e-8 residual (testable)
+- Condition detection: κ estimate working (observable)
+- Test coverage: 100+ unit tests (countable)
+- Void safety: void_safety="all" (compiler-enforced)
+- SCOOP: concurrency="scoop" (compiler-enforced)
+- Documentation: GitHub Pages site (deliverable)
+
+## Next Steps
+
+1. ✅ Research COMPLETE (for both simple_calculus and simple_linalg)
+2. ⏳ Run `/eiffel.spec` to transform research into 8-step specification
+3. ⏳ Run `/eiffel.intent` to capture refined intent
+4. ⏳ Run `/eiffel.contracts` through `/eiffel.ship` for full workflow
+
+## Overall Assessment
+
+Research is COMPREHENSIVE, EVIDENCE-BASED, and ACTIONABLE.
+No critical gaps identified. Ready to proceed to specification phase.
+
+Both simple_calculus and simple_linalg have:
+- Validated use cases (physics simulations)
+- Clear MVP scope (no over-engineering)
+- Sound algorithms (industry-standard)
+- Numerical stability strategy (error bounds, condition numbers)
+- Integration plan (work together for Jacobians, etc.)
+
+Status: RESEARCH_COMPLETE - Ready for /eiffel.spec

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - simple_linalg</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">Complete API Reference</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">Quick API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="#main-classes">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="main-classes">
+            <h2>Vector Classes</h2>
+
+            <h3>VECTOR_2</h3>
+            <p>2D vector optimized for graphics and physics.</p>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Signature</th><th>Returns</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>make_from_components</strong></td>
+                        <td>make_from_components (a_x, a_y: REAL_64)</td>
+                        <td>VECTOR_2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>x, y</strong></td>
+                        <td>x, y: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>dot_product</strong></td>
+                        <td>dot_product (a_other: VECTOR_2): REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>norm</strong></td>
+                        <td>norm: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>normalized</strong></td>
+                        <td>normalized: VECTOR_2</td>
+                        <td>VECTOR_2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>add, subtract</strong></td>
+                        <td>add (a_other: VECTOR_2): VECTOR_2</td>
+                        <td>VECTOR_2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>scale</strong></td>
+                        <td>scale (a_factor: REAL_64): VECTOR_2</td>
+                        <td>VECTOR_2</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>VECTOR_3</h3>
+            <p>3D vector extending VECTOR_2 with z-coordinate and cross product.</p>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Signature</th><th>Returns</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>make_from_components</strong></td>
+                        <td>make_from_components (a_x, a_y, a_z: REAL_64)</td>
+                        <td>VECTOR_3</td>
+                    </tr>
+                    <tr>
+                        <td><strong>z</strong></td>
+                        <td>z: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cross_product</strong></td>
+                        <td>cross_product (a_other: VECTOR_3): VECTOR_3</td>
+                        <td>VECTOR_3</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>VECTOR_N</h3>
+            <p>N-dimensional generic vector.</p>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Signature</th><th>Returns</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>make_zero</strong></td>
+                        <td>make_zero (a_dimension: INTEGER)</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>make_filled</strong></td>
+                        <td>make_filled (a_dimension: INTEGER; a_value: REAL_64)</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>dimension</strong></td>
+                        <td>dimension: INTEGER</td>
+                        <td>INTEGER</td>
+                    </tr>
+                    <tr>
+                        <td><strong>at</strong></td>
+                        <td>at (a_index: INTEGER): REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>set_at</strong></td>
+                        <td>set_at (a_index: INTEGER; a_value: REAL_64)</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>dot_product</strong></td>
+                        <td>dot_product (a_other: VECTOR_N): REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>norm</strong></td>
+                        <td>norm (a_type: INTEGER): REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>add, subtract</strong></td>
+                        <td>add (a_other: VECTOR_N): VECTOR_N</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>scale</strong></td>
+                        <td>scale (a_factor: REAL_64): VECTOR_N</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="matrix-class">
+            <h2>Matrix Class</h2>
+
+            <h3>MATRIX</h3>
+            <p>M×N matrix with robust numerical algorithms.</p>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Signature</th><th>Returns</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>make_identity</strong></td>
+                        <td>make_identity (a_size: INTEGER)</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>make_zero</strong></td>
+                        <td>make_zero (a_rows, a_columns: INTEGER)</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>rows, columns</strong></td>
+                        <td>rows, columns: INTEGER</td>
+                        <td>INTEGER</td>
+                    </tr>
+                    <tr>
+                        <td><strong>element</strong></td>
+                        <td>element (a_row, a_column: INTEGER): REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>set_element</strong></td>
+                        <td>set_element (a_row, a_column: INTEGER; a_value: REAL_64)</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><strong>transpose</strong></td>
+                        <td>transpose: MATRIX</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>multiply</strong></td>
+                        <td>multiply (a_other: MATRIX): MATRIX</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>subtract</strong></td>
+                        <td>subtract (a_other: MATRIX): MATRIX</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>determinant</strong></td>
+                        <td>determinant: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>inverse</strong></td>
+                        <td>inverse: MATRIX</td>
+                        <td>MATRIX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>solve</strong></td>
+                        <td>solve (a_b: VECTOR_N): VECTOR_N</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>condition_number</strong></td>
+                        <td>condition_number: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>is_identity</strong></td>
+                        <td>is_identity: BOOLEAN</td>
+                        <td>BOOLEAN</td>
+                    </tr>
+                    <tr>
+                        <td><strong>lu_decomposition</strong></td>
+                        <td>lu_decomposition: LU_DECOMPOSITION</td>
+                        <td>LU_DECOMPOSITION</td>
+                    </tr>
+                    <tr>
+                        <td><strong>dominant_eigenvalue</strong></td>
+                        <td>dominant_eigenvalue: REAL_64</td>
+                        <td>REAL_64</td>
+                    </tr>
+                    <tr>
+                        <td><strong>dominant_eigenvector</strong></td>
+                        <td>dominant_eigenvector: VECTOR_N</td>
+                        <td>VECTOR_N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>eigenvalue_with_options</strong></td>
+                        <td>eigenvalue_with_options (a_tolerance: REAL_64; a_max_iterations: INTEGER): EIGENVALUE_RESULT</td>
+                        <td>EIGENVALUE_RESULT</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="result-classes">
+            <h2>Result Classes</h2>
+
+            <h3>EIGENVALUE_RESULT</h3>
+            <p>Immutable result from eigenvalue computation.</p>
+            <h4>Features</h4>
+            <ul>
+                <li><strong>eigenvalue: REAL_64</strong> — Computed eigenvalue</li>
+                <li><strong>eigenvector: VECTOR_N</strong> — Associated eigenvector</li>
+                <li><strong>iterations: INTEGER</strong> — Iterations performed</li>
+                <li><strong>tolerance_achieved: REAL_64</strong> — Final tolerance reached</li>
+                <li><strong>is_converged: BOOLEAN</strong> — Convergence status</li>
+            </ul>
+
+            <h3>LU_DECOMPOSITION</h3>
+            <p>LU factors from matrix decomposition.</p>
+            <h4>Features</h4>
+            <ul>
+                <li><strong>l_factor: MATRIX</strong> — Lower triangular factor</li>
+                <li><strong>u_factor: MATRIX</strong> — Upper triangular factor</li>
+                <li><strong>pivot_row: ARRAY [INTEGER]</strong> — Pivot row indices (partial pivoting)</li>
+            </ul>
+        </section>
+
+        <section id="contracts">
+            <h2>Design by Contract</h2>
+            <p>
+                All features are fully specified with Design by Contract (DBC).
+                Preconditions validate input correctness, postconditions guarantee output properties.
+            </p>
+
+            <h3>Common Preconditions</h3>
+            <ul>
+                <li><strong>dimension_positive</strong> — Vector/matrix dimension must be > 0</li>
+                <li><strong>index_valid</strong> — Array index must be in valid range</li>
+                <li><strong>compatible_dimensions</strong> — Vectors/matrices must have matching dimensions for operations</li>
+                <li><strong>square_matrix</strong> — Some operations (inverse, eigenvalue) require square matrices</li>
+                <li><strong>well_conditioned</strong> — solve() requires condition_number ≤ 1e12</li>
+            </ul>
+
+            <h3>Common Postconditions</h3>
+            <ul>
+                <li><strong>result_not_nan</strong> — Results are valid numbers (not NaN)</li>
+                <li><strong>norm_non_negative</strong> — Vector norms >= 0</li>
+                <li><strong>dimension_preserved</strong> — Operations preserve dimension</li>
+                <li><strong>determinant_correct</strong> — Determinant matches mathematical definition</li>
+                <li><strong>solution_satisfies_system</strong> — solve() result satisfies Ax=b</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">View on GitHub</a></p>
+        </footer>
+    </main>
+</body>
+</html>

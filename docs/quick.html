@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick API - simple_linalg</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">Quick API Reference</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="#quick-examples">Quick API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="quick-examples">
+            <h2>Quick Examples</h2>
+
+            <h3>2D Vector</h3>
+            <pre><code>local
+    l_v: VECTOR_2
+do
+    create l_v.make_from_components (3.0, 4.0)
+    Result := l_v.norm  -- Returns 5.0
+end</code></pre>
+
+            <h3>3D Vector with Cross Product</h3>
+            <pre><code>local
+    l_a, l_b, l_c: VECTOR_3
+do
+    create l_a.make_from_components (1.0, 0.0, 0.0)
+    create l_b.make_from_components (0.0, 1.0, 0.0)
+    l_c := l_a.cross_product (l_b)
+    -- l_c = (0.0, 0.0, 1.0)
+end</code></pre>
+
+            <h3>N-Dimensional Vector</h3>
+            <pre><code>local
+    l_v: VECTOR_N
+do
+    create l_v.make_zero (5)
+    -- l_v = [0, 0, 0, 0, 0]
+    l_v.set_at (1, 2.0)
+    Result := l_v.norm (1)  -- L1 norm
+end</code></pre>
+
+            <h3>Matrix Operations</h3>
+            <pre><code>local
+    l_m1, l_m2, l_m3: MATRIX
+do
+    create l_m1.make_identity (3)
+    create l_m2.make_identity (3)
+    l_m3 := l_m1.multiply (l_m2)
+    Result := l_m3.is_identity  -- Returns true
+end</code></pre>
+
+            <h3>Condition Number Check</h3>
+            <pre><code>local
+    l_m: MATRIX
+    l_x, l_b: VECTOR_N
+do
+    create l_m.make_identity (3)
+    create l_b.make_zero (3)
+    if l_m.condition_number <= 1.0e12 then
+        l_x := l_m.solve (l_b)
+    end
+end</code></pre>
+
+            <h3>Eigenvalue Computation</h3>
+            <pre><code>local
+    l_m: MATRIX
+    l_lambda: REAL_64
+    l_v: VECTOR_N
+do
+    create l_m.make_identity (3)
+    l_lambda := l_m.dominant_eigenvalue
+    l_v := l_m.dominant_eigenvector
+end</code></pre>
+        </section>
+
+        <section id="common-operations">
+            <h2>Common Operations</h2>
+            <ul>
+                <li><strong>Vector dot product:</strong> <code>l_a.dot_product (l_b)</code></li>
+                <li><strong>Vector norm:</strong> <code>l_v.norm</code> (L2 by default)</li>
+                <li><strong>Matrix transpose:</strong> <code>l_m.transpose</code></li>
+                <li><strong>Matrix multiplication:</strong> <code>l_m1.multiply (l_m2)</code></li>
+                <li><strong>Linear solve (Ax=b):</strong> <code>l_m.solve (l_b)</code></li>
+                <li><strong>Condition number:</strong> <code>l_m.condition_number</code></li>
+            </ul>
+        </section>
+
+        <section id="result-types">
+            <h2>Result Types</h2>
+            <ul>
+                <li><strong>VECTOR_2, VECTOR_3:</strong> Fixed-dimension specialized vectors</li>
+                <li><strong>VECTOR_N:</strong> N-dimensional generic vector</li>
+                <li><strong>MATRIX:</strong> M×N matrix with robust algorithms</li>
+                <li><strong>EIGENVALUE_RESULT:</strong> Eigenvalue + eigenvector with convergence info</li>
+                <li><strong>LU_DECOMPOSITION:</strong> L and U factors from decomposition</li>
+            </ul>
+        </section>
+
+        <section id="next-steps">
+            <h2>Next Steps</h2>
+            <p>For detailed API reference, see <a href="api-reference.html">API Reference</a>.</p>
+            <p>For examples and patterns, see <a href="cookbook.html">Cookbook</a>.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">View on GitHub</a></p>
+        </footer>
+    </main>
+</body>
+</html>

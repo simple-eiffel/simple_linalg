@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - simple_linalg</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_linalg</h1>
+        <p class="tagline">Architecture & Design</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">Quick API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="#overview">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_linalg">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>
+                simple_linalg uses a <strong>clean separation of concerns</strong> with specialized
+                classes for vectors and matrices. This design provides simplicity for common use cases
+                while enabling expert-level control for research and advanced computations.
+            </p>
+        </section>
+
+        <section id="design-patterns">
+            <h2>Design Patterns</h2>
+
+            <h3>Specialization Pattern</h3>
+            <p>
+                <strong>VECTOR_2, VECTOR_3, VECTOR_N</strong> follow a specialization hierarchy:
+            </p>
+            <ul>
+                <li><strong>VECTOR_2</strong> — Optimized for 2D graphics/physics (x, y fields)</li>
+                <li><strong>VECTOR_3</strong> — Extends VECTOR_2 with z coordinate and cross product</li>
+                <li><strong>VECTOR_N</strong> — Generic n-dimensional via ARRAY [REAL_64]</li>
+            </ul>
+
+            <h3>Immutable Results Pattern</h3>
+            <p>
+                <strong>EIGENVALUE_RESULT</strong> and <strong>LU_DECOMPOSITION</strong> are immutable
+                data classes enabling safe concurrent access (SCOOP-compatible).
+            </p>
+
+            <h3>Algorithm Patterns</h3>
+            <p>
+                Matrix operations use robust numerical algorithms:
+            </p>
+            <ul>
+                <li><strong>LU with Partial Pivoting:</strong> Reduces roundoff error, enables solve()</li>
+                <li><strong>Condition Number Estimation:</strong> Validates numerical stability (κ ≤ 1e12 threshold)</li>
+                <li><strong>Power Iteration:</strong> Eigenvalue/eigenvector computation with convergence verification</li>
+            </ul>
+        </section>
+
+        <section id="class-structure">
+            <h2>Class Structure</h2>
+
+            <pre><code>VECTOR_2 (2D vectors)
+  └── VECTOR_3 (adds 3D, cross product)
+
+VECTOR_N (N-dimensional via ARRAY)
+
+MATRIX (M×N matrix, column-major storage)
+  ├── LU_DECOMPOSITION (L and U factors)
+  └── EIGENVALUE_RESULT (eigenvalue + eigenvector)</code></pre>
+        </section>
+
+        <section id="storage">
+            <h2>Storage Representation</h2>
+
+            <h3>Vector Storage</h3>
+            <ul>
+                <li><strong>VECTOR_2:</strong> Two REAL_64 fields (x, y)</li>
+                <li><strong>VECTOR_3:</strong> Three REAL_64 fields (x, y, z)</li>
+                <li><strong>VECTOR_N:</strong> ARRAY [REAL_64] of size (dimension)</li>
+            </ul>
+
+            <h3>Matrix Storage</h3>
+            <p>
+                Matrices use <strong>column-major storage</strong> via ARRAY2 [REAL_64]:
+            </p>
+            <pre><code>-- Column-major: element(i, j) = data[j][i]
+-- Improves cache locality for typical linear algebra patterns
+-- Example 3×3 matrix:
+--   [a b c]   stored as  [a d g]
+--   [d e f]              [b e h]
+--   [g h i]              [c f i]</code></pre>
+        </section>
+
+        <section id="algorithms">
+            <h2>Key Algorithms</h2>
+
+            <h3>Vector Operations</h3>
+            <ul>
+                <li><strong>Dot Product:</strong> Σ(a[i] × b[i]) with numerical stability</li>
+                <li><strong>Norm:</strong> L1 (sum), L2 (Euclidean), L∞ (max) norms</li>
+                <li><strong>Cross Product (3D):</strong> u × v = (u_y*v_z - u_z*v_y, ...)</li>
+            </ul>
+
+            <h3>Matrix Multiplication</h3>
+            <p>
+                Standard O(n³) algorithm with three nested loops, accessing data in cache-friendly pattern.
+            </p>
+
+            <h3>LU Decomposition</h3>
+            <p>
+                Decomposes A = LU via Gaussian elimination with <strong>partial pivoting</strong>:
+            </p>
+            <ul>
+                <li>Reduces roundoff error</li>
+                <li>Handles pivoting for numerical stability</li>
+                <li>Enables efficient solve() and inverse()</li>
+            </ul>
+
+            <h3>Condition Number Estimation</h3>
+            <p>
+                κ(A) estimates how sensitive solution is to input perturbations:
+            </p>
+            <ul>
+                <li><strong>κ ≈ 1:</strong> Well-conditioned (solution is robust)</li>
+                <li><strong>κ = 1e6 to 1e12:</strong> Moderate condition (acceptable)</li>
+                <li><strong>κ > 1e12:</strong> Ill-conditioned (unreliable)</li>
+            </ul>
+
+            <h3>Power Iteration (Eigenvalues)</h3>
+            <p>
+                Computes dominant eigenvalue/eigenvector via power iteration:
+            </p>
+            <ol>
+                <li>Start with random vector v</li>
+                <li>Iterate: v = A×v / ||A×v||</li>
+                <li>Convergence when ||A×v - λ×v|| < tolerance</li>
+            </ol>
+        </section>
+
+        <section id="scoop-design">
+            <h2>SCOOP Design</h2>
+            <p>
+                All features are SCOOP-compatible (concurrency support="scoop" in ECF):
+            </p>
+            <ul>
+                <li><strong>Immutable Results:</strong> EIGENVALUE_RESULT and LU_DECOMPOSITION are read-only</li>
+                <li><strong>No Shared State:</strong> Each computation is independent</li>
+                <li><strong>Thread-Safe Vectors/Matrices:</strong> No synchronization needed (value types)</li>
+            </ul>
+        </section>
+
+        <section id="performance">
+            <h2>Performance Characteristics</h2>
+
+            <h3>Vector Operations</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Time Complexity</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dot Product</td>
+                        <td>O(n)</td>
+                        <td>Single pass through data</td>
+                    </tr>
+                    <tr>
+                        <td>Norm (L1, L2, L∞)</td>
+                        <td>O(n)</td>
+                        <td>Single pass, L2 uses sqrt</td>
+                    </tr>
+                    <tr>
+                        <td>Add/Subtract</td>
+                        <td>O(n)</td>
+                        <td>Component-wise operation</td>
+                    </tr>
+                    <tr>
+                        <td>Scale</td>
+                        <td>O(n)</td>
+                        <td>Scalar multiplication</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Matrix Operations</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Time Complexity</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Multiply</td>
+                        <td>O(n³)</td>
+                        <td>Three nested loops</td>
+                    </tr>
+                    <tr>
+                        <td>LU Decomposition</td>
+                        <td>O(n³)</td>
+                        <td>Gaussian elimination</td>
+                    </tr>
+                    <tr>
+                        <td>Determinant</td>
+                        <td>O(n³)</td>
+                        <td>Via LU decomposition</td>
+                    </tr>
+                    <tr>
+                        <td>Solve (Ax=b)</td>
+                        <td>O(n³)</td>
+                        <td>LU decomposition + forward/back substitution</td>
+                    </tr>
+                    <tr>
+                        <td>Inverse</td>
+                        <td>O(n³)</td>
+                        <td>Via LU + substitution</td>
+                    </tr>
+                    <tr>
+                        <td>Eigenvalue (Power Iteration)</td>
+                        <td>O(k×n²)</td>
+                        <td>k iterations of matrix×vector</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="void-safety">
+            <h2>Void Safety</h2>
+            <p>
+                All code is void-safe (void_safety="all" in ECF):
+            </p>
+            <ul>
+                <li>All references are attached by default (never Void)</li>
+                <li>Optional parameters use detachable with explicit checks</li>
+                <li>Results are always non-Void (guaranteed by postconditions)</li>
+            </ul>
+        </section>
+
+        <section id="design-decisions">
+            <h2>Design Decisions</h2>
+
+            <h3>Why Specialization for 2D/3D?</h3>
+            <p>
+                Graphics and physics heavily use 2D/3D vectors. Specialized classes provide:
+                <ul>
+                    <li>Optimized memory layout (x, y fields instead of array)</li>
+                    <li>Direct field access without indexing overhead</li>
+                    <li>Cross product for 3D (meaningless for n-dimensional)</li>
+                </ul>
+            </p>
+
+            <h3>Why Column-Major Storage?</h3>
+            <p>
+                Column-major improves cache locality for typical linear algebra patterns like
+                matrix×vector multiplication, which iterates by columns.
+            </p>
+
+            <h3>Why Condition Number Threshold?</h3>
+            <p>
+                κ > 1e12 indicates ill-conditioning beyond REAL_64 precision. Solving such systems
+                produces unreliable results. The solve() precondition forces users to acknowledge this.
+            </p>
+
+            <h3>Why Power Iteration for Eigenvalues?</h3>
+            <p>
+                Power iteration computes only the dominant eigenvalue (largest magnitude). This is sufficient
+                for many applications and avoids complex algorithms like QR iteration.
+            </p>
+
+            <h3>Why Immutable Results?</h3>
+            <p>
+                Immutable results enable SCOOP usage without synchronization overhead.
+                Users can safely pass results between concurrent processors.
+            </p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_linalg">View on GitHub</a></p>
+        </footer>
+    </main>
+</body>
+</html>

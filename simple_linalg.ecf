@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system name="simple_linalg" uuid="23456789-2345-6789-2345-6789ABCDEF01">
+	<description>
+		Linear algebra library: vectors, matrices, and decompositions.
+		Design by Contract: preconditions validate well-conditioning, postconditions provide error estimates.
+	</description>
+
+	<target name="simple_linalg">
+		<root class="SIMPLE_LINALG" feature="default_create"/>
+		<capability>
+			<concurrency support="scoop"/>
+			<void_safety support="all"/>
+		</capability>
+		<setting name="console_application" value="false"/>
+		<setting name="library_root" value="./"/>
+
+		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<library name="simple_math" location="$SIMPLE_EIFFEL/simple_math/simple_math.ecf"/>
+
+		<cluster name="src" location="./src" recursive="true"/>
+	</target>
+
+	<target name="simple_linalg_tests" extends="simple_linalg">
+		<root class="TEST_APP" feature="make"/>
+		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<cluster name="test" location="./test" recursive="true"/>
+	</target>
+</system>
