@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system name="simple_linalg" uuid="23456789-2345-6789-2345-6789ABCDEF01">
+<system name="simple_linalg" uuid="23456789-2345-6789-2345-6789ABCDEF01" library_target="simple_linalg">
 	<description>
 		Linear algebra library: vectors, matrices, and decompositions.
 		Design by Contract: preconditions validate well-conditioning, postconditions provide error estimates.
