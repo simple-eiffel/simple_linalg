@@ -9,32 +9,32 @@ create
 
 feature {NONE}
 
-	make_identity (n: INTEGER)
+	make_identity (a_n: INTEGER)
 			-- Create n x n identity matrix
 		require
-			size_positive: n > 0
+			size_positive: a_n > 0
 		do
-			rows := n
-			columns := n
-			create data.make_filled (0.0, 1, n * n)
+			rows := a_n
+			columns := a_n
+			create data.make_filled (0.0, 1, a_n * a_n)
 			-- Set diagonal to 1
-			across 1 |..| n as i loop
+			across 1 |..| a_n as i loop
 				set_element (i, i, 1.0)
 			end
 		end
 
-	make_from_array_2d (arr: ARRAY2 [REAL_64])
+	make_from_array_2d (a_arr: ARRAY2 [REAL_64])
 			-- Create matrix from 2D array (row-major input, convert to column-major)
 		require
-			array_valid: arr /= Void
+			array_valid: a_arr /= Void
 		do
-			rows := arr.height
-			columns := arr.width
+			rows := a_arr.height
+			columns := a_arr.width
 			create data.make_filled (0.0, 1, rows * columns)
 			-- Copy in column-major order
 			across 1 |..| columns as col loop
 				across 1 |..| rows as row loop
-					set_element (row, col, arr [row, col])
+					set_element (row, col, a_arr [row, col])
 				end
 			end
 		end
@@ -46,24 +46,24 @@ feature -- Dimensions
 
 feature -- Element Access
 
-	element (row: INTEGER; col: INTEGER): REAL_64
+	element (a_row: INTEGER; col: INTEGER): REAL_64
 			-- Get element at [row, col]
 		require
-			row_valid: row >= 1 and row <= rows
+			row_valid: a_row >= 1 and a_row <= rows
 			col_valid: col >= 1 and col <= columns
 		do
-			Result := data [col_index (row, col)]
+			Result := data [col_index (a_row, col)]
 		ensure
 			result_valid: not Result.is_nan
 		end
 
-	set_element (row: INTEGER; col: INTEGER; value: REAL_64)
+	set_element (a_row: INTEGER; col: INTEGER; value: REAL_64)
 			-- Set element at [row, col]
 		require
-			row_valid: row >= 1 and row <= rows
+			row_valid: a_row >= 1 and a_row <= rows
 			col_valid: col >= 1 and col <= columns
 		do
-			data [col_index (row, col)] := value
+			data [col_index (a_row, col)] := value
 		end
 
 feature -- Matrix Operations
@@ -82,39 +82,39 @@ feature -- Matrix Operations
 			dimensions_swapped: Result.rows = columns and Result.columns = rows
 		end
 
-	multiply (other: MATRIX): MATRIX
+	multiply (a_other: MATRIX): MATRIX
 			-- Matrix product C = A * B
 		require
-			other_valid: other /= Void
-			dimensions_compatible: columns = other.rows
+			other_valid: a_other /= Void
+			dimensions_compatible: columns = a_other.rows
 		local
 			l_sum: REAL_64
 		do
-			create Result.make_from_array_2d (create {ARRAY2 [REAL_64]}.make_filled (0.0, rows, other.columns))
+			create Result.make_from_array_2d (create {ARRAY2 [REAL_64]}.make_filled (0.0, rows, a_other.columns))
 			across 1 |..| rows as i loop
-				across 1 |..| other.columns as j loop
+				across 1 |..| a_other.columns as j loop
 					l_sum := 0.0
 					across 1 |..| columns as k loop
-						l_sum := l_sum + element (i, k) * other.element (k, j)
+						l_sum := l_sum + element (i, k) * a_other.element (k, j)
 					end
 					Result.set_element (i, j, l_sum)
 				end
 			end
 		ensure
 			result_valid: Result /= Void
-			result_dimensions: Result.rows = rows and Result.columns = other.columns
+			result_dimensions: Result.rows = rows and Result.columns = a_other.columns
 		end
 
-	subtract (other: MATRIX): MATRIX
+	subtract (a_other: MATRIX): MATRIX
 			-- Element-wise subtraction C = A - B
 		require
-			other_valid: other /= Void
-			same_dimensions: rows = other.rows and columns = other.columns
+			other_valid: a_other /= Void
+			same_dimensions: rows = a_other.rows and columns = a_other.columns
 		do
 			create Result.make_from_array_2d (create {ARRAY2 [REAL_64]}.make_filled (0.0, rows, columns))
 			across 1 |..| rows as r loop
 				across 1 |..| columns as c loop
-					Result.set_element (r, c, element (r, c) - other.element (r, c))
+					Result.set_element (r, c, element (r, c) - a_other.element (r, c))
 				end
 			end
 		ensure
@@ -143,11 +143,11 @@ feature -- Matrix Operations
 			result_valid: Result /= Void
 		end
 
-	solve (rhs: VECTOR_N): VECTOR_N
+	solve (a_rhs: VECTOR_N): VECTOR_N
 			-- Solve Ax = b via LU decomposition
 		require
 			square: rows = columns
-			compatible: rows = rhs.dimension
+			compatible: rows = a_rhs.dimension
 			well_conditioned: condition_number <= 1.0e12
 		do
 			-- Stub - Phase 1
@@ -205,10 +205,10 @@ feature {NONE}
 
 	data: ARRAY [REAL_64]  -- Column-major storage
 
-	col_index (row: INTEGER; col: INTEGER): INTEGER
+	col_index (a_row: INTEGER; col: INTEGER): INTEGER
 			-- Linear index for column-major storage
 		do
-			Result := (col - 1) * rows + row
+			Result := (col - 1) * rows + a_row
 		end
 
 end
