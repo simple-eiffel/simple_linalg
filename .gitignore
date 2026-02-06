@@ -32,3 +32,5 @@ htmlcov/
 
 # Project temporary files
 *.tmp
+*.epr
+*.log
