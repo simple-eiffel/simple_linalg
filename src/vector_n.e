@@ -15,7 +15,7 @@ feature {NONE}
 		local
 			l_idx: INTEGER
 		do
-			create components.make (1, a_arr.count)
+			create components.make_filled (0.0, 1, a_arr.count)
 			l_idx := 1
 			across a_arr as ic loop
 				components [l_idx] := ic.item
@@ -147,8 +147,32 @@ feature -- Vector Operations
 			result_dimension: Result.dimension = dimension
 		end
 
+feature -- Model Queries
+
+	components_model: MML_SEQUENCE [REAL_64]
+			-- Mathematical model of vector components in order.
+		local
+			i: INTEGER
+		do
+			create Result
+			from i := 1 until i > components.count loop
+				Result := Result & components [i]
+				i := i + 1
+			end
+		ensure
+			count_matches: Result.count = dimension
+		end
+
 feature {VECTOR_N}
 
 	components: ARRAY [REAL_64]
+
+invariant
+	-- Core data integrity
+	components_attached: components /= Void
+	components_not_empty: components.count > 0
+
+	-- Model consistency
+	model_count: components_model.count = dimension
 
 end

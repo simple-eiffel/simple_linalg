@@ -64,6 +64,9 @@ feature -- Element Access
 			col_valid: col >= 1 and col <= columns
 		do
 			data [col_index (a_row, col)] := value
+		ensure
+			element_set: element (a_row, col) = value
+			dimensions_unchanged: rows = old rows and columns = old columns
 		end
 
 feature -- Matrix Operations
@@ -201,6 +204,22 @@ feature -- Matrix Operations
 			result_valid: Result /= Void
 		end
 
+feature -- Model Queries
+
+	data_model: MML_SEQUENCE [REAL_64]
+			-- Mathematical model of column-major storage.
+		local
+			i: INTEGER
+		do
+			create Result
+			from i := data.lower until i > data.upper loop
+				Result := Result & data [i]
+				i := i + 1
+			end
+		ensure
+			count_matches: Result.count = data.count
+		end
+
 feature {NONE}
 
 	data: ARRAY [REAL_64]  -- Column-major storage
@@ -210,5 +229,14 @@ feature {NONE}
 		do
 			Result := (col - 1) * rows + a_row
 		end
+
+invariant
+	-- Core data integrity
+	data_attached: data /= Void
+	data_size: data.count = rows * columns
+	dimensions_positive: rows > 0 and columns > 0
+
+	-- Model consistency
+	model_count: data_model.count = rows * columns
 
 end

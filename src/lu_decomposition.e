@@ -35,6 +35,22 @@ feature -- Access
 			Result := lu_matrix.rows
 		end
 
+feature -- Model Queries
+
+	permutation_model: MML_SEQUENCE [INTEGER]
+			-- Mathematical model of row permutation indices.
+		local
+			i: INTEGER
+		do
+			create Result
+			from i := permutation.lower until i > permutation.upper loop
+				Result := Result & permutation [i]
+				i := i + 1
+			end
+		ensure
+			count_matches: Result.count = permutation.count
+		end
+
 feature -- Decomposition Access
 
 	l_factor: MATRIX
@@ -98,5 +114,14 @@ feature -- Decomposition Access
 			result_not_void: Result /= Void
 			result_square: Result.rows = Result.columns
 		end
+
+invariant
+	-- Core data integrity
+	lu_matrix_attached: lu_matrix /= Void
+	permutation_attached: permutation /= Void
+	permutation_size: permutation.count = lu_matrix.rows
+
+	-- Model consistency
+	model_count: permutation_model.count = permutation.count
 
 end
