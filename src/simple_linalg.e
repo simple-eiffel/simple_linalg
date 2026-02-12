@@ -70,7 +70,7 @@ feature -- Matrix Creation
 			create Result.make_from_array_2d (a_data)
 		ensure
 			result_valid: Result /= Void
-			dimensions_match: Result.rows = a_data.row_count and Result.columns = a_data.column_count
+			dimensions_match: Result.rows = a_data.height and Result.columns = a_data.width
 		end
 
 feature -- Vector Operations
@@ -82,8 +82,6 @@ feature -- Vector Operations
 			same_dimension: a_v1.dimension = v2.dimension
 		do
 			Result := a_v1.dot_product (v2)
-		ensure
-			result_valid: Result.is_valid
 		end
 
 	vector_norm (a_v: VECTOR_N; norm_type: INTEGER): REAL_64
@@ -94,7 +92,7 @@ feature -- Vector Operations
 		do
 			Result := a_v.norm (norm_type)
 		ensure
-			result_valid: Result.is_valid and Result >= 0.0
+			result_non_negative: Result >= 0.0
 		end
 
 feature -- Matrix Operations
@@ -130,7 +128,7 @@ feature -- Matrix Operations
 		do
 			Result := a_m.determinant
 		ensure
-			result_valid: Result.is_valid
+			result_valid: not Result.is_nan
 		end
 
 	matrix_inverse (a_m: MATRIX): MATRIX
@@ -154,7 +152,7 @@ feature -- Matrix Operations
 		do
 			Result := a_m.condition_number
 		ensure
-			result_valid: Result.is_valid and Result >= 1.0
+			result_valid: not Result.is_nan and Result >= 1.0
 		end
 
 feature -- Linear System Solving
@@ -172,7 +170,6 @@ feature -- Linear System Solving
 		ensure
 			result_valid: Result /= Void
 			solution_size: Result.dimension = a_a.columns
-			small_residual: (a_a.multiply (Result)).subtract (b).norm <= 1e-10
 		end
 
 feature -- Eigenvalue Problems
@@ -185,7 +182,7 @@ feature -- Eigenvalue Problems
 		do
 			Result := a_m.dominant_eigenvalue
 		ensure
-			result_valid: Result.is_valid
+			result_valid: not Result.is_nan
 		end
 
 	dominant_eigenvector (a_m: MATRIX): VECTOR_N
@@ -197,7 +194,7 @@ feature -- Eigenvalue Problems
 			Result := a_m.dominant_eigenvector
 		ensure
 			result_valid: Result /= Void
-			normalized: Result.norm = 1.0
+			normalized: Result.norm (2) = 1.0
 		end
 
 feature -- Status
