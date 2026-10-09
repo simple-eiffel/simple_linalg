@@ -6,13 +6,14 @@
 	</description>
 
 	<target name="simple_linalg">
-		<root class="SIMPLE_LINALG" feature="default_create"/>
+		<root class="SIMPLE_LINALG" feature="make"/>
 		<capability>
 			<concurrency support="scoop"/>
 			<void_safety support="all"/>
 		</capability>
 		<setting name="console_application" value="false"/>
 		<setting name="library_root" value="./"/>
+		<setting name="total_order_on_reals" value="true"/>
 
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="simple_math" location="$SIMPLE_EIFFEL/simple_math/simple_math.ecf"/>
